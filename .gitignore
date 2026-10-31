@@ -1,0 +1,9 @@
+moteur/venv/
+moteur/models/
+moteur/faces/
+moteur/cache/
+moteur/sorties/
+__pycache__/
+*.pyc
+dist/
+POUR_LE_RASPBERRY.md

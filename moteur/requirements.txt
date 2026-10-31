@@ -1,0 +1,6 @@
+numpy
+opencv-python
+onnx
+# Windows : onnxruntime-directml (GPU NVIDIA/AMD/Intel). Ailleurs : onnxruntime.
+onnxruntime-directml; sys_platform == "win32"
+onnxruntime; sys_platform != "win32"
