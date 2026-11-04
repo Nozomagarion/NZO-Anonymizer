@@ -1,11 +1,11 @@
 """Zip de la Release GitHub : le panneau + le moteur + la doc, dans un dossier « Anonymizer ».
 
-    python tools/make_release_zip.py  ->  dist/Anonymizer-EffectCraft-1.1.1.zip
+    python tools/make_release_zip.py  ->  dist/Anonymizer-EffectCraft-1.1.2.zip
 """
 import os, zipfile
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-VERSION = "1.1.1"
+VERSION = "1.1.2"
 SKIP = {"venv", "models", "faces", "__pycache__", "cache", "sorties"}
 
 
@@ -15,6 +15,7 @@ def main():
     with zipfile.ZipFile(out, "w", zipfile.ZIP_DEFLATED) as z:
         for f in ("Anonymizer.jsx", "README.md", "README.fr.md", "LICENSE", "NOTICE.md"):
             z.write(os.path.join(ROOT, f), "Anonymizer/" + f)
+        z.write(os.path.join(ROOT, "Plug-ins", "AnonymizerControls.wasm"), "Anonymizer/Plug-ins/AnonymizerControls.wasm")
         for root, dirs, files in os.walk(os.path.join(ROOT, "moteur")):
             dirs[:] = [d for d in dirs if d not in SKIP]
             for f in files:

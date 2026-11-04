@@ -18,7 +18,7 @@
 
 (function anonymizerPanel(thisObj) {
   var SECTION = "Anonymizer";
-  var VERSION = "1.1.1";
+  var VERSION = "1.1.2";
   var G = $.global;
 
   // ------------------------------------------------------------------ réglages persistants
@@ -583,18 +583,57 @@
     return s;
   }
 
+  // Réglages : le plug-in « NZO - Anonymizer Controls » (AnonymizerControls.wasm) donne des curseurs
+  // bornés ; sans lui, des curseurs simples qu'un script ne peut pas borner. Les expressions bornent
+  // ce qu'elles lisent, et les calques créés par une ancienne version gardent leurs curseurs.
+  var FX_NAME = "NZO - Anonymizer Controls";
+  var FX_ID = "com.nozomagarion.fx.anonymizer-controls";
+  var RANGES = { "Contour (px)": [0, 500], "Expansion (px)": [-500, 500], "Taille des blocs (px)": [1, 500] };
+
+  function findControlsFx(layer) {
+    var fxs = layer.property("ADBE Effect Parade");
+    for (var i = 1; i <= fxs.numProperties; i++) {
+      var e = fxs.property(i);
+      if (e.name === FX_NAME || e.matchName === FX_ID) return e;
+    }
+    return null;
+  }
+
+  function addControlsFx(layer) {
+    var fx = findControlsFx(layer);
+    if (fx) return fx;
+    var fxs = layer.property("ADBE Effect Parade"), names = [FX_ID, FX_NAME];
+    for (var i = 0; i < names.length; i++) {
+      try { if (fxs.canAddProperty(names[i])) return fxs.addProperty(names[i]); } catch (e) {}
+    }
+    return null;
+  }
+
   function addSlider(layer, name, value) {
+    var r = RANGES[name], v = Math.max(r[0], Math.min(r[1], Number(value)));
+    var plug = addControlsFx(layer);
+    if (plug) {
+      plug.property(name).setValue(v);
+      return plug;
+    }
     var fx = layer.property("ADBE Effect Parade").addProperty("ADBE Slider Control");
     fx.name = name;
-    fx.property("Slider").setValue(value);
+    fx.property("Slider").setValue(v);
     return fx;
+  }
+
+  // L'expression qui lit un réglage du calque, bornée.
+  function readControl(layer, name) {
+    var r = RANGES[name];
+    var read = findControlsFx(layer) ? 'effect("' + FX_NAME + '")("' + name + '").value' : 'effect("' + name + '")("Slider").value';
+    return "clamp(" + read + ", " + r[0] + ", " + r[1] + ")";
   }
 
   // Un masque par personne, animé d'après les pistes, visible seulement quand elle est à l'image.
   function addFaceMasks(layer, tracks, ctx, map, rangeStart, rangeEnd, report) {
     var masks = layer.property("ADBE Mask Parade");
-    var featherExpr = 'var v = effect("Contour (px)")("Slider"); [v, v]';
-    var expandExpr = 'effect("Expansion (px)")("Slider")';
+    var featherExpr = "var v = " + readControl(layer, "Contour (px)") + "; [v, v]";
+    var expandExpr = readControl(layer, "Expansion (px)");
     var dt = 1 / ctx.fps;
     for (var i = 0; i < tracks.length; i++) {
       var t = tracks[i];
@@ -661,7 +700,7 @@
   }
 
   function buildLayers(ctx, result) {
-    var data = readJson(result.tracksFile);
+    var data = result.tracksData || readJson(result.tracksFile);
     var tracks = data.tracks || [];
     var w = data.width || ctx.item.width, h = data.height || ctx.item.height;
     if (!tracks.length) {
@@ -713,7 +752,7 @@
         var px = effectsLayer(ctx, "Anonymizer · Pixelisation", w, h, top, data, map);
         addSlider(px, "Taille des blocs (px)", ctx.pixelSize);
         var mo = px.property("ADBE Effect Parade").addProperty("ADBE Mosaic");
-        var bs = 'Math.max(1, effect("Taille des blocs (px)")("Slider"))';
+        var bs = readControl(px, "Taille des blocs (px)");
         mo.property("Horizontal Blocks").expression = "Math.max(1, Math.round(thisComp.width / " + bs + "))";
         mo.property("Vertical Blocks").expression = "Math.max(1, Math.round(thisComp.height / " + bs + "))";
         try { mo.property("Sharp Colors").setValue(true); } catch (e) {}
@@ -735,6 +774,13 @@
   } catch (e) {}
 
   ping(true);
+  // Tests : ANONYMIZER_HEADLESS = {ctx, result: {tracksData, seconds}} construit les calques sans moteur.
+  if (typeof ANONYMIZER_HEADLESS !== "undefined") {
+    buildLayers(ANONYMIZER_HEADLESS.ctx, ANONYMIZER_HEADLESS.result);
+    writeLn(status.text);
+    return;
+  }
+
   if (ui instanceof Window) {
     ui.center();
     ui.show();

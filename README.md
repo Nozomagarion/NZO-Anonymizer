@@ -46,7 +46,7 @@ It works on stock EffectCraft. It does not modify the app in any way.
 1. Install **Python 3.10 to 3.13** from [python.org](https://www.python.org/downloads/) (tick *Add python.exe to PATH*).
 2. Download the latest release zip, unzip it, and copy the `moteur` folder to `Documents\Anonymizer\moteur`. Avoid `Program Files`.
 3. Double-click `installer.bat`. It installs the libraries and downloads the AI models (about 1.1 GB, once). Your graphics card is used through DirectML (NVIDIA, AMD or Intel); without one it falls back to the CPU.
-4. In EffectCraft: **File ▸ Scripts ▸ Install ScriptUI Panel…** and pick `Anonymizer.jsx`.
+4. In EffectCraft: **File ▸ Scripts ▸ Install ScriptUI Panel…** and pick `Anonymizer.jsx`. For bounded sliders, also copy `Plug-ins/AnonymizerControls.wasm` to EffectCraft's `Plug-ins` folder and restart (optional: without it, the panel uses plain sliders).
 5. In EffectCraft **Settings ▸ Scripting & Expressions**, tick **Allow Scripts to Write Files and Access Network**. The panel cannot reach the engine without it.
 
 macOS and Linux: use `installer.sh`, then `demarrer_moteur.command` (macOS) or `demarrer_moteur.sh`. Run `chmod +x *.sh *.command` first.

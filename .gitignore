@@ -6,4 +6,5 @@ moteur/sorties/
 __pycache__/
 *.pyc
 dist/
+target/
 POUR_LE_RASPBERRY.md

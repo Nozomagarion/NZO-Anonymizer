@@ -1,0 +1,17 @@
+[workspace]
+resolver = "2"
+members = ["_shared/ecfx", "controls"]
+
+[workspace.package]
+version = "1.0.0"
+edition = "2024"
+license = "MIT"
+publish = false
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
+panic = "abort"
+debug = false
+strip = true

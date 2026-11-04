@@ -1,8 +1,8 @@
 @echo off
 chcp 65001 >nul
-title Publier Anonymizer 1.1.1
+title Publier Anonymizer 1.1.2
 echo.
-echo  Publication d'Anonymizer 1.1.1 : GitHub puis NZO Store
+echo  Publication d'Anonymizer 1.1.2 : GitHub puis NZO Store
 echo.
 cd /d "%~dp0"
 where gh >nul 2>nul
@@ -27,7 +27,7 @@ if not exist ".git" (
   git init -b main >nul
 )
 git add -A
-git -c user.name="Nozomagarion" -c user.email="Nozomagarion@users.noreply.github.com" commit -m "Anonymizer 1.1.1 pour EffectCraft" >nul 2>nul
+git -c user.name="Nozomagarion" -c user.email="Nozomagarion@users.noreply.github.com" commit -m "Anonymizer 1.1.2 pour EffectCraft" >nul 2>nul
 gh repo view Nozomagarion/NZO-Anonymizer >nul 2>nul
 if errorlevel 1 (
   gh repo create Nozomagarion/NZO-Anonymizer --public --source . --remote origin --description "Hide every face in your footage: AI face, blur, pixelation. A panel for EffectCraft." --push
@@ -38,23 +38,19 @@ if errorlevel 1 (
   if errorlevel 1 goto fail
 )
 
-echo  3/5 Release v1.1.1...
+echo  3/5 Release v1.1.2...
 (
-echo ## Anonymizer 1.1.1
+echo ## Anonymizer 1.1.2
 echo.
-echo - Fast mode: faces detected every second frame, AI face recomputed every third frame under a blur, no HD under a blur. About 3x faster on the same test, same result.
-echo - Blur and pixelation now always have a fake AI face underneath, and their layers stop exactly where the AI faces stop.
-echo - Long shots no longer freeze EffectCraft: hover the panel to follow progress.
-echo - Under a blur, a blurred patch of the original face area is laid under the fake face, so no real detail is ever left, even when the swap misses a face.
-echo - New button: See under the blur.
+echo - Bounded sliders through the optional AnonymizerControls.wasm plug-in.
 echo.
 echo Unzip, copy the "moteur" folder to Documents\Anonymizer\moteur, run installer.bat, then install Anonymizer.jsx in EffectCraft. See the README.
 ) > "%TEMP%\anonymizer-notes.md"
-gh release view v1.1.1 -R Nozomagarion/NZO-Anonymizer >nul 2>nul
+gh release view v1.1.2 -R Nozomagarion/NZO-Anonymizer >nul 2>nul
 if errorlevel 1 (
-  gh release create v1.1.1 "dist\Anonymizer-EffectCraft-1.1.1.zip" -R Nozomagarion/NZO-Anonymizer --title "Anonymizer 1.1.1" --notes-file "%TEMP%\anonymizer-notes.md" --latest
+  gh release create v1.1.2 "dist\Anonymizer-EffectCraft-1.1.2.zip" -R Nozomagarion/NZO-Anonymizer --title "Anonymizer 1.1.2" --notes-file "%TEMP%\anonymizer-notes.md" --latest
 ) else (
-  gh release upload v1.1.1 "dist\Anonymizer-EffectCraft-1.1.1.zip" -R Nozomagarion/NZO-Anonymizer --clobber
+  gh release upload v1.1.2 "dist\Anonymizer-EffectCraft-1.1.2.zip" -R Nozomagarion/NZO-Anonymizer --clobber
 )
 if errorlevel 1 goto fail
 
@@ -68,7 +64,7 @@ if "%STORE%"=="" (
 echo  Store : %STORE%
 
 echo  5/5 Envoi au NZO Store (en attente de ta validation)...
-curl.exe -sS -m 60 -F "file=@dist\com.nozomagarion.tool.anonymizer-1.1.1.zip" -F "plugin_id=com.nozomagarion.tool.anonymizer" -F "name=Anonymizer" -F "version=1.1.1" -F "app_id=effectcraft" -F "desc=Hide every face: fake AI face, blur or pixelation, tracked and stackable. Needs the local engine from GitHub." -F "author=Nozomagarion" "%STORE%/api/submit"
+curl.exe -sS -m 60 -F "file=@dist\com.nozomagarion.tool.anonymizer-1.1.2.zip" -F "plugin_id=com.nozomagarion.tool.anonymizer" -F "name=Anonymizer" -F "version=1.1.2" -F "app_id=effectcraft" -F "desc=Hide every face: fake AI face, blur or pixelation, tracked and stackable. Needs the local engine from GitHub." -F "author=Nozomagarion" "%STORE%/api/submit"
 if errorlevel 1 goto storefail
 echo.
 echo.
@@ -82,7 +78,7 @@ exit /b 0
 :storefail
 echo.
 echo  ===== GitHub est publie, mais l'envoi au NZO Store a echoue. =====
-echo  Le zip pour le store est ici : %~dp0dist\com.nozomagarion.tool.anonymizer-1.1.1.zip
+echo  Le zip pour le store est ici : %~dp0dist\com.nozomagarion.tool.anonymizer-1.1.2.zip
 echo  Dis-le a Claude et copie-lui le texte ci-dessus.
 echo.
 pause

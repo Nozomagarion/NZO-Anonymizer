@@ -44,7 +44,7 @@ Les scripts EffectCraft ne peuvent pas lancer de programme. L'outil a donc deux 
 1. Installe **Python 3.10 à 3.13** depuis [python.org](https://www.python.org/downloads/) en cochant *Add python.exe to PATH*.
 2. Télécharge le zip de la dernière version, décompresse-le et copie le dossier `moteur` dans `Documents\Anonymizer\moteur`. Évite `Program Files`.
 3. Double-clique sur `installer.bat`. Il installe les bibliothèques et télécharge les modèles IA (environ 1,1 Go, une seule fois). Ta carte graphique est utilisée via DirectML (NVIDIA, AMD ou Intel) ; sans carte compatible, le processeur prend le relais.
-4. Dans EffectCraft : **Fichier ▸ Scripts ▸ Installer un panneau ScriptUI…** et choisis `Anonymizer.jsx`.
+4. Dans EffectCraft : **Fichier ▸ Scripts ▸ Installer un panneau ScriptUI…** et choisis `Anonymizer.jsx`. Pour des curseurs bornés, copie aussi `Plug-ins/AnonymizerControls.wasm` dans le dossier `Plug-ins` d'EffectCraft puis relance (facultatif : sans lui, le panneau utilise des curseurs simples).
 5. Dans **Réglages ▸ Scripting & Expressions**, coche **Allow Scripts to Write Files and Access Network**. Sans cette option, le panneau ne peut pas joindre le moteur.
 
 macOS et Linux : utilise `installer.sh`, puis `demarrer_moteur.command` (macOS) ou `demarrer_moteur.sh`. Fais d'abord `chmod +x *.sh *.command`.
